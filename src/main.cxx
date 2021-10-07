@@ -2,6 +2,8 @@
 #include <fmt/format.h>
 #include <range/v3/view.hpp>
 
+#include <filesystem>
+
 namespace view = ranges::views;
 
 int fib(int x) {
@@ -28,4 +30,15 @@ int main(int argc, char** argv) {
   for (int x : view::iota(1) | view::take(n)) {
     fmt::print("fib({}) = {}\n", x, fib(x));
   }
+
+  std::cout << std::endl;
+
+  // Print the names of all regular files in the current directory
+  std::filesystem::directory_iterator begin("."), end;
+  for (auto iter = begin; iter != end; ++iter) {
+    if (iter->is_regular_file()) {
+	  std::cout << iter->path().filename() << '\n';
+	}
+  }
+  std::cout << "Done!!" << std::endl;
 }
