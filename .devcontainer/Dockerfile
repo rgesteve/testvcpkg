@@ -7,5 +7,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #    clang-11 \
 #    clang-tidy-11 \
     build-essential \
+    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/
