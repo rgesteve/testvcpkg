@@ -30,7 +30,7 @@ int fib(int x) {
 using namespace std;
 
 int main(int argc, char** argv) {
-#if 0
+
   cxxopts::Options options("fibo", "Print the fibonacci sequence up to a value 'n'");
     options.add_options()
       ("n,value", "The value to print to", cxxopts::value<int>()->default_value("10"));
@@ -51,7 +51,6 @@ int main(int argc, char** argv) {
   	  std::cout << iter->path().filename() << '\n';
   	}
   }
-#endif
 
   const size_t N = 10;
   vector<int> data(N); 
@@ -59,8 +58,8 @@ int main(int argc, char** argv) {
   cout << "Running from self-contained cmake" << endl;
 
   cout << "Creating data: \n";
-  iota(begin(data), end(data), -5); 
-  copy(begin(data), end(data), ostream_iterator<int>{cout, ", "});
+  iota(std::begin(data), std::end(data), -5); 
+  copy(std::begin(data), std::end(data), ostream_iterator<int>{cout, ", "});
   cout << '\n';
 
   cout << "The result of summing is: [" << sum_integers(data) << "]" << endl;
