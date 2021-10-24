@@ -1,3 +1,5 @@
+set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
+
 find_package(fmt REQUIRED)
 find_package(range-v3 REQUIRED)
 find_package(cxxopts REQUIRED)
@@ -17,13 +19,13 @@ target_link_libraries(fibo
 
 # Testing
 # testing binary
-add_executable(cpp_test test.cxx)
-target_link_libraries(cpp_test sum_integers)
+#add_executable(cpp_test test.cxx)
+#target_link_libraries(cpp_test sum_integers)
 
-if(BUILD_TESTING)
+#if(BUILD_TESTING)
 # define tests
-add_test(
-  NAME cpp_test
-  COMMAND $<TARGET_FILE:cpp_test>
-  )
-endif()
+#add_test(
+#  NAME cpp_test
+#  COMMAND $<TARGET_FILE:cpp_test>
+#  )
+#endif()
