@@ -14,7 +14,7 @@
 	//		"remoteX11.display": 0,
 	//		"remoteX11.SSH.enable": false,
 	//		"remoteX11.WSL.enable": false,
-			"C_Cpp.vcpkg.enabled": false,
+			"C_Cpp.vcpkg.enabled": true,
 	//		"C_Cpp.loggingLevel": "Information",
 			"C_Cpp.default.cppStandard": "c++17",
 			"C_Cpp.default.cStandard": "c11",
