@@ -8,7 +8,21 @@
 	"runArgs": [ "--init", "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
 
 	// Set *default* container specific settings.json values on container create.
-	"settings": {},
+	"settings": {
+	//		"terminal.integrated.defaultProfile.linux": "/bin/bash",
+	//		"python.pythonPath": "/usr/bin/python3",
+	//		"remoteX11.display": 0,
+	//		"remoteX11.SSH.enable": false,
+	//		"remoteX11.WSL.enable": false,
+			"C_Cpp.vcpkg.enabled": false,
+	//		"C_Cpp.loggingLevel": "Information",
+			"C_Cpp.default.cppStandard": "c++17",
+			"C_Cpp.default.cStandard": "c11",
+	//		"C_Cpp.default.compilerPath": "/usr/bin/c++",
+	//      https://clang.llvm.org/docs/JSONCompilationDatabase.html
+	//		"C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+	//		"C_Cpp.default.intelliSenseMode": "linux-gcc-x64"
+	},
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
