@@ -1,0 +1,33 @@
+{
+    "env": {
+        //"myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include"],
+        "vcpkgRoot": "${workspaceFolder}/vcpkg_installed"
+    },
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${vcpkgRoot}/x64-windows-static/include",
+                "${vcpkgRoot}/x86-windows/include",
+                "${vcpkgRoot}/x86-windows-static/include"
+            ],
+            "defines": [
+//                "_DEBUG",
+//                "UNICODE",
+//                "_UNICODE"    
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "forcedInclude": [
+//                "src/global.hpp",
+//                "src/xstd.hpp",
+//                "src/constexpr.hpp",
+//                "src/macros.hpp"
+            ]
+        }
+    ],
+    "version": 4
+}
