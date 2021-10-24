@@ -3,6 +3,14 @@
 #include <range/v3/view.hpp>
 
 #include <filesystem>
+#include <vector>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
+#include <numeric>
+#include <cstdlib>
+
+#include "sum_integers.hpp"
 
 namespace view = ranges::views;
 
@@ -19,7 +27,10 @@ int fib(int x) {
   return a;
 }
 
+using namespace std;
+
 int main(int argc, char** argv) {
+#if 0
   cxxopts::Options options("fibo", "Print the fibonacci sequence up to a value 'n'");
     options.add_options()
       ("n,value", "The value to print to", cxxopts::value<int>()->default_value("10"));
@@ -37,8 +48,24 @@ int main(int argc, char** argv) {
   std::filesystem::directory_iterator begin("."), end;
   for (auto iter = begin; iter != end; ++iter) {
     if (iter->is_regular_file()) {
-	  std::cout << iter->path().filename() << '\n';
-	}
+  	  std::cout << iter->path().filename() << '\n';
+  	}
   }
-  std::cout << "Done!!" << std::endl;
+#endif
+
+  const size_t N = 10;
+  vector<int> data(N); 
+
+  cout << "Running from self-contained cmake" << endl;
+
+  cout << "Creating data: \n";
+  iota(begin(data), end(data), -5); 
+  copy(begin(data), end(data), ostream_iterator<int>{cout, ", "});
+  cout << '\n';
+
+  cout << "The result of summing is: [" << sum_integers(data) << "]" << endl;
+
+  cout << "Done!!" << endl;
+
+  return EXIT_SUCCESS;
 }
