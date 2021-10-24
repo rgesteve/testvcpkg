@@ -14,3 +14,16 @@ target_link_libraries(fibo
     range-v3::range-v3
     cxxopts::cxxopts
     sum_integers)
+
+# Testing
+# testing binary
+add_executable(cpp_test test.cxx)
+target_link_libraries(cpp_test sum_integers)
+
+if(BUILD_TESTING)
+# define tests
+add_test(
+  NAME cpp_test
+  COMMAND $<TARGET_FILE:cpp_test>
+  )
+endif()
