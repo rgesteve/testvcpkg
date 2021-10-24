@@ -11,6 +11,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     # for vcpkg
     curl zip unzip tar \    
     # for fmt build
-    pkg-config    \          
+    pkg-config    \
+    # for nuget dependencies
+    mono-devel nuget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/
