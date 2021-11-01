@@ -4,14 +4,16 @@
         "**/*/obj" : true,
         "**/build/" : true,
         "**/vcpkg_installed/" : true,
-        "**/Testing/" : true
+        "**/Testing/" : true,
+        "**/vcpkg/": true
     },
     "search.exclude" : {
         "**/*/bin" : true,
         "**/*/obj" : true,
         "**/build/" : true,
         "**/vcpkg_installed/" : true,
-        "**/Testing/" : true
+        "**/Testing/" : true,
+        "**/vcpkg/": true
     }
 }
 
