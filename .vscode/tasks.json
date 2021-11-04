@@ -30,6 +30,7 @@
             "label": "Build Release",
             "type": "shell",
             "command": "cmake --build ${workspaceFolder}/build/release",
+            "group" : "build",
             "dependsOn": [
                 "Configure Release"
             ],
@@ -57,6 +58,7 @@
             "label": "Test Release",
             "type": "shell",
             "command": "cmake --build ${workspaceFolder}/build/release --target test",
+            "group" : "test",
             "dependsOn": [
                 "Build Release"
             ],
