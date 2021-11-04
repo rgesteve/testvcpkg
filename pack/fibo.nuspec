@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+    <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>
+        <id>fiboNative</id>
+        <version>{version}</version>
+        <authors>RG Esteves</authors>
+        <owners>RG Esteves</owners>
+        <license type="expression">ISC</license>
+        <projectUrl>https://github.com/rgesteve/testvcpkg</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Sandbox for various C++ development technologies</description>
+        <copyright>Copyright {datetime.datetime.now().year} @ RG Esteves</copyright>
+        <tags>wip useless</tags>
+        <dependencies> </dependencies>
+    </metadata>
+        <files>
+        <file src="build\**" target="build"/>
+        <file src="runtimes\**" target="runtimes"/>
+        </files>
+</package>

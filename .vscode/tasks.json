@@ -34,9 +34,6 @@
                 "Configure Release"
             ],
             "problemMatcher": [],
-            "group": {
-                "kind": "build"
-            } 
         },
         {
             "label": "Test Debug",
