@@ -5,7 +5,7 @@ find_package(range-v3 REQUIRED)
 find_package(cxxopts REQUIRED)
 
 # example library
-add_library(sum_integers sum_integers.cxx)
+add_library(sum_integers SHARED sum_integers.cxx)
 
 # main code
 add_executable(fibo main.cxx)
