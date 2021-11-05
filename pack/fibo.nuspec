@@ -2,7 +2,7 @@
     <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
         <id>fiboNative</id>
-        <version>{version}</version>
+        <version>0.1.0</version>
         <authors>RG Esteves</authors>
         <owners>RG Esteves</owners>
         <license type="expression">ISC</license>
@@ -10,11 +10,27 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Sandbox for various C++ development technologies</description>
         <copyright>Copyright {datetime.datetime.now().year} @ RG Esteves</copyright>
-        <tags>wip useless</tags>
-        <dependencies> </dependencies>
+        <tags>native wip useless</tags>
+        <dependencies> 
+        <!--
+            <group targetFramework=".NETStandard1.0" />
+        -->
+        </dependencies>
     </metadata>
         <files>
-        <file src="build\**" target="build"/>
-        <file src="runtimes\**" target="runtimes"/>
+            <!--
+                <file src="build/fibo.targets" target="build\netstandard1.0"/>
+            -->
+            <file src="build/fiboNative.targets" target="build\"/>
+            <!--
+                <file src="build\**" target="build"/>
+                <file src="runtimes\**" target="runtimes"/>
+            -->
+
+            <!-- Native -->
+            <file src="../build/debug/src/libsum_integers.so" target="runtimes\linux-x64\native"/>
+            <!--
+            <file src="../build/debug/libsum_integers.pdb" target="runtimes\linux-x64\native"/>
+            -->
         </files>
 </package>
