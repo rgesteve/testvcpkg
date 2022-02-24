@@ -1,3 +1,4 @@
+#if 0
 #include <cxxopts.hpp>
 #include <fmt/format.h>
 #include <range/v3/view.hpp>
@@ -68,3 +69,15 @@ int main(int argc, char** argv) {
 
   return EXIT_SUCCESS;
 }
+#else
+#include <iostream>
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+  while(1) {
+    cout << "Hello" << endl;
+  }
+}
+#endif
