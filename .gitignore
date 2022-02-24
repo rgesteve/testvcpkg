@@ -6,4 +6,6 @@ build/
 vcpkg_installed/
 Testing/
 *.nupkg
+perf.data
+
 

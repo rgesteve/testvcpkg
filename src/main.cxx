@@ -71,13 +71,29 @@ int main(int argc, char** argv) {
 }
 #else
 #include <iostream>
+#include <random>
+#include <iterator>
+#include <algorithm>
+#include <vector>
+#include <cstdlib>
 
 using namespace std;
 
+const unsigned int SIZE = 128;
+const unsigned int ITER = 4;
+
 int main(int argc, char* argv[])
 {
-  while(1) {
-    cout << "Hello" << endl;
+  vector<double> data(SIZE);
+  random_device rd;
+  default_random_engine rng(rd());
+
+  for (auto i = 0; i < ITER; ++i) {
+    generate(begin(data), end(data), [&rng] { return generate_canonical<double, 12>(rng); });
+    copy(begin(data), end(data), ostream_iterator<double>(cout, " "));
+    cout << endl;
   }
+
+  return EXIT_SUCCESS;
 }
 #endif
