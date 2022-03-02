@@ -76,14 +76,20 @@ int main(int argc, char** argv) {
 #include <algorithm>
 #include <vector>
 #include <cstdlib>
+#include <filesystem>
+
+#include "daal.h"
 
 using namespace std;
+using namespace daal;
+using namespace daal::data_management;
 
 const unsigned int SIZE = 128;
 const unsigned int ITER = 4;
 
 int main(int argc, char* argv[])
 {
+  #if 0
   vector<double> data(SIZE);
   random_device rd;
   default_random_engine rng(rd());
@@ -93,7 +99,33 @@ int main(int argc, char* argv[])
     copy(begin(data), end(data), ostream_iterator<double>(cout, " "));
     cout << endl;
   }
+  #endif
 
+  auto dataset_path_name = std::getenv("DATASET_PATH");
+  if (dataset_path_name == NULL) {
+    std::cerr << "Need DATASET_PATH variable defined, couldn't find\n";
+    return EXIT_FAILURE;
+  }
+  auto dataset_path = std::filesystem::path(dataset_path_name);
+  if (!std::filesystem::exists(dataset_path)) {
+    std::cerr << "Cannot find specified path for dataset (" << dataset_path << ")\n";
+    return EXIT_FAILURE;
+  }
+
+#if 0
+  auto path = std::filesystem::current_path();
+  if (std::filesystem::exists(path)) {
+    std::cout << "current path exists" << '\n';
+  } else {
+    std::cout << "Really weird" << '\n';
+  }
+  #endif
+
+  std::cout << std::filesystem::relative(dataset_path) << '\n';
+  std::cout << std::filesystem::canonical(dataset_path) << '\n';
+  std::cout << std::filesystem::absolute(dataset_path) << '\n';
+
+  std::cout << "The name in character (" << dataset_path.c_str() << ")\n";
   return EXIT_SUCCESS;
 }
 #endif
