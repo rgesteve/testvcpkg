@@ -143,7 +143,12 @@ int main(int argc, char* argv[])
   typedef float FPType;
   const unsigned int nFeatures = 3;
   const unsigned int nDependentVariables = 1;
+#if 0
   FileDataSource<CSVFeatureManager> trainDataSource(dataset_full_path.string(), DataSource::doAllocateNumericTable, DataSource::doDictionaryFromContext);
+#else
+  CsvDataSourceOptions csvOptions(CsvDataSourceOptions::allocateNumericTable | CsvDataSourceOptions::createDictionaryFromContext | CsvDataSourceOptions::parseHeader);
+  FileDataSource<CSVFeatureManager> trainDataSource(dataset_full_path.string(), csvOptions);
+#endif
 
 #if 0
   // These trigger a compile error
@@ -157,14 +162,29 @@ int main(int argc, char* argv[])
   NumericTablePtr mergedData(new MergedNumericTable(trainData, trainDependentVariables));
 #endif
 
-#if 0
-  trainDataSource.loadDataBlock();
-#else
-    trainDataSource.loadDataBlock();
-#endif
-  NumericTablePtr table = trainDataSource.getNumericTable();
-  std::cout << "The table has [" << table->getNumberOfRows() << "] rows\n";
-  std::cout << "The table has [" << table->getNumberOfColumns() << "] columns\n";
+  trainDataSource.loadDataBlock(mergedData.get());
+
+  //NumericTablePtr table = trainDataSource.getNumericTable();
+  NumericTablePtr table = mergedData;
+  size_t nRows = table->getNumberOfRows();
+  size_t nCols = table->getNumberOfColumns();
+  std::cout << "The table has [" << nRows << "] rows\n";
+  std::cout << "The table has [" << nCols << "] columns\n";
+  //  std::cout << "The table is stored in [" << (table->getDataLayout() ) << "] layout\n";
+  BlockDescriptor<> block;
+  table->getBlockOfRows(0, nRows, readOnly, block);
+  DAAL_DATA_TYPE* data = block.getBlockPtr();
+
+  for (size_t i = 0; i < /* nRows*/ 20; i++) {
+    for (size_t j = 0; j < nCols; j++) {
+      std::cout << data[i * nCols + j] << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+
+  table->releaseBlockOfRows(block);
+  std::cout << "Done!!" << endl;
   
   return EXIT_SUCCESS;
 }
