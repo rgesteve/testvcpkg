@@ -71,6 +71,7 @@ int main(int argc, char** argv) {
 }
 #else
 #include <iostream>
+#include <string>
 #include <random>
 #include <iterator>
 #include <algorithm>
@@ -83,9 +84,12 @@ int main(int argc, char** argv) {
 using namespace std;
 using namespace daal;
 using namespace daal::data_management;
+using namespace daal::algorithms;
 
 const unsigned int SIZE = 128;
 const unsigned int ITER = 4;
+
+const string trainDatasetFilename = "titanic_train.csv";
 
 int main(int argc, char* argv[])
 {
@@ -112,6 +116,13 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  if (!std::filesystem::exists(dataset_path / trainDatasetFilename)) {
+    std::cerr << "Cannot find expected file on the path specified (" << dataset_path << ")\n";
+    return EXIT_FAILURE;
+  }
+
+  auto dataset_full_path = dataset_path / trainDatasetFilename;
+
 #if 0
   auto path = std::filesystem::current_path();
   if (std::filesystem::exists(path)) {
@@ -119,13 +130,42 @@ int main(int argc, char* argv[])
   } else {
     std::cout << "Really weird" << '\n';
   }
-  #endif
+
 
   std::cout << std::filesystem::relative(dataset_path) << '\n';
   std::cout << std::filesystem::canonical(dataset_path) << '\n';
   std::cout << std::filesystem::absolute(dataset_path) << '\n';
 
   std::cout << "The name in character (" << dataset_path.c_str() << ")\n";
+#endif
+  std::cout << "Starting to load data from [" << dataset_full_path.string() << "]\n";
+
+  typedef float FPType;
+  const unsigned int nFeatures = 3;
+  const unsigned int nDependentVariables = 1;
+  FileDataSource<CSVFeatureManager> trainDataSource(dataset_full_path.string(), DataSource::doAllocateNumericTable, DataSource::doDictionaryFromContext);
+
+#if 0
+  // These trigger a compile error
+  NumericTable trainData(new HomogenNumericTable<FPType>(nFeatures, 0, NumericTable::notAllocate));
+  NumericTable trainDependentVariables(new HomogenNumericTable<FPType>(nDependentVariables, 0, NumericTable::notAllocate));
+#else
+  NumericTablePtr trainData;
+  NumericTablePtr trainDependentVariables;
+  trainData.reset(new HomogenNumericTable<>(nFeatures, 0, NumericTable::notAllocate));
+  trainDependentVariables.reset(new HomogenNumericTable<>(nDependentVariables, 0, NumericTable::notAllocate));
+  NumericTablePtr mergedData(new MergedNumericTable(trainData, trainDependentVariables));
+#endif
+
+#if 0
+  trainDataSource.loadDataBlock();
+#else
+    trainDataSource.loadDataBlock();
+#endif
+  NumericTablePtr table = trainDataSource.getNumericTable();
+  std::cout << "The table has [" << table->getNumberOfRows() << "] rows\n";
+  std::cout << "The table has [" << table->getNumberOfColumns() << "] columns\n";
+  
   return EXIT_SUCCESS;
 }
 #endif
