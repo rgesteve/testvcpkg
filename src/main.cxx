@@ -3,6 +3,32 @@
 #undef DAL_TEST
 #define ARROW_TEST
 
+#include <filesystem>
+#include <iostream>
+#include <optional>
+
+std::optional<std::filesystem::path> get_full_path(const std::string& fileName)
+{
+  auto dataset_path_name = std::getenv("DATASET_PATH");
+  if (dataset_path_name == NULL) {
+    std::cerr << "Need DATASET_PATH variable defined, couldn't find\n";
+    return std::nullopt;
+  }
+  auto dataset_path = std::filesystem::path(dataset_path_name);
+  if (!std::filesystem::exists(dataset_path)) {
+    std::cerr << "Cannot find specified path for dataset (" << dataset_path << ")\n";
+    return std::nullopt;
+  }
+
+  if (!std::filesystem::exists(dataset_path / fileName)) {
+    std::cerr << "Cannot find expected file on the path specified (" << dataset_path << ")\n";
+    return std::nullopt;
+  }
+
+  auto dataset_full_path = dataset_path / fileName;
+  return dataset_full_path;
+}
+
 #ifdef SUM_INTEGERS
 #include <cxxopts.hpp>
 #include <fmt/format.h>
@@ -211,6 +237,13 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   const string trainDatasetFilename { "titanic_train.csv" };
+
+  auto fullPath = get_full_path(trainDatasetFilename);
+  if (fullPath.has_value()) {
+    cout << "Got a value for the full path" << "\n";
+  } else {
+    cout << "An error trying out getting a full path for file" << "\n";
+  }
 
   string hello_message { "Hello, message!" };
   cout << hello_message << "\n";
