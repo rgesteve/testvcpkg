@@ -1,4 +1,9 @@
-#if 0
+// define one (and *exactly one*) of the following
+#undef SUM_INTEGERS
+#undef DAL_TEST
+#define ARROW_TEST
+
+#ifdef SUM_INTEGERS
 #include <cxxopts.hpp>
 #include <fmt/format.h>
 #include <range/v3/view.hpp>
@@ -69,7 +74,9 @@ int main(int argc, char** argv) {
 
   return EXIT_SUCCESS;
 }
-#else
+#endif
+
+#ifdef DAL_TEST
 #include <iostream>
 #include <string>
 #include <random>
@@ -186,6 +193,27 @@ int main(int argc, char* argv[])
   table->releaseBlockOfRows(block);
   std::cout << "Done!!" << endl;
   
+  return EXIT_SUCCESS;
+}
+#endif
+
+#ifdef ARROW_TEST
+#include <iostream>
+#include <string>
+#include <cstdlib>
+
+#include <arrow/api.h>
+#include <arrow/io/api.h>
+#include <arrow/csv/api.h>
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+  const string trainDatasetFilename { "titanic_train.csv" };
+
+  string hello_message { "Hello, message!" };
+  cout << hello_message << "\n";
   return EXIT_SUCCESS;
 }
 #endif
