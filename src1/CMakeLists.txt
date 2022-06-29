@@ -8,3 +8,5 @@ add_executable(packaging_try)
 target_sources(packaging_try PRIVATE src/main.cpp)
 target_compile_features(packaging_try PRIVATE cxx_std_11)
 
+install(TARGETS packaging_try)
+
