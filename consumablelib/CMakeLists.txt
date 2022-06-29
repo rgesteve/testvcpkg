@@ -32,3 +32,8 @@ install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/consumablelib-config-version.cmake"
   DESTINATION "${consumablelib_INSTALL_CMAKEDIR}")
 
+set(CPACK_PACKAGE_VENDOR "RG Esteves") 
+set(CPACK_GENERATOR "NuGet;TBZ2") 
+set(CPACK_THREADS 0) 
+include(CPack)
+
