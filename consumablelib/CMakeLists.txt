@@ -10,7 +10,9 @@ set(consumablelib_INSTALL_CMAKEDIR cmake CACHE PATH "Installation directory for 
 add_library(consumablelib STATIC)
 target_sources(consumablelib PRIVATE src/lib.cpp)
 target_include_directories(consumablelib PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  )
 target_compile_features(consumablelib PUBLIC cxx_std_11)
 
 install(TARGETS consumablelib
