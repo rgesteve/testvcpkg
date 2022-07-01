@@ -14,3 +14,6 @@ cmake --build ${BUILDDIR}
 # TODO -- Should add a flag to run this
 # to run the test suite
 #cmake --build ${BUILDDIR} --target test
+# for some reason this doesn't work though
+#ctest --test-dir ${BUILDDIR}
+
