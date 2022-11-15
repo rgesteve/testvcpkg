@@ -6,6 +6,11 @@ find_package(fmt REQUIRED)
 find_package(range-v3 REQUIRED)
 find_package(cxxopts REQUIRED)
 
+#rapidcsv is header-only so, instead of
+#  find_package(rapidcsv REQUIRED)
+# we should use
+find_path(RAPIDCSV_INCLUDE_DIRS "rapidcsv.h")
+
 set(USE_DPCPP no)
 find_package(oneDAL CONFIG REQUIRED)
 
@@ -18,6 +23,7 @@ add_library(sum_integers SHARED sum_integers.cxx)
 # main code
 add_executable(fibo main.cxx)
 target_compile_features(fibo PRIVATE cxx_std_17)
+target_include_directories(fibo PRIVATE ${RAPIDCSV_INCLUDE_DIRS})
 target_link_libraries(fibo
   PRIVATE
     fmt::fmt

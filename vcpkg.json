@@ -5,7 +5,8 @@
 	"cxxopts",
 	"fmt",
 	"range-v3",
-	"arrow"
+	"arrow",
+	"rapidcsv"
     ]
   }
   

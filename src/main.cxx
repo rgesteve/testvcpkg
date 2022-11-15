@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <iostream>
 #include <optional>
+#include <rapidcsv.h>
 
 std::optional<std::filesystem::path> get_full_path(const std::string& fileName)
 {
