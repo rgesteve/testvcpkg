@@ -64,6 +64,8 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
+  cout << "******************* main 1" << endl;
+
   cxxopts::Options options("fibo", "Print the fibonacci sequence up to a value 'n'");
     options.add_options()
       ("n,value", "The value to print to", cxxopts::value<int>()->default_value("10"));
@@ -127,7 +129,10 @@ const string trainDatasetFilename = "titanic_train.csv";
 
 int main(int argc, char* argv[])
 {
-  #if 0
+
+   cout << "******************* main 2" << endl;
+
+#if 0
   vector<double> data(SIZE);
   random_device rd;
   default_random_engine rng(rd());
@@ -237,6 +242,12 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+  cout << "******************* main 3" << endl;
+
+  std::cout << "Declaring an array" << std::endl;
+  std::array<float, 5> c; //
+  std::cout << "Array c is of size " << c.size() << " elements." << std::endl;
+
   const string trainDatasetFilename { "titanic_train.csv" };
 
   auto fullPath = get_full_path(trainDatasetFilename);
@@ -244,10 +255,27 @@ int main(int argc, char* argv[])
     cout << "Got a value for the full path" << "\n";
   } else {
     cout << "An error trying out getting a full path for file" << "\n";
+    return EXIT_FAILURE;
   }
 
-  string hello_message { "Hello, message!" };
+  string hello_message { "Trying to parse file!" };
   cout << hello_message << "\n";
+
+  // https://github.com/d99kris/rapidcsv/blob/master/doc/rapidcsv_Document.md
+  rapidcsv::Document titanic{fullPath.value(),
+    rapidcsv::LabelParams{},
+    rapidcsv::SeparatorParams{},  
+    rapidcsv::ConverterParams{true}
+  };
+
+  auto rows = titanic.GetRowCount(); // seems like it skips header
+  size_t max_rows = 5;
+  cout << "The document has " << rows << " lines." << "\n";
+  for (size_t i = 0; i < max_rows; ++i) {
+    const auto row = titanic.GetRow<float>(i);
+    cout << "Row " << i << " has " << row.size() << " fields, the first of which is " << row[0] << " and the last " << row[ row.size() - 1 ] << ".\n";
+  }
+  
   return EXIT_SUCCESS;
 }
 #endif
