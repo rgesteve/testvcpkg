@@ -11,6 +11,16 @@ find_package(cxxopts REQUIRED)
 # we should use
 find_path(RAPIDCSV_INCLUDE_DIRS "rapidcsv.h")
 
+find_package(xgboost REQUIRED)
+
+# xgboost is built as static libraries, all cxx dependencies need to be linked into the
+# executable.
+if (XGBOOST_BUILD_STATIC_LIB)
+  enable_language(CXX)
+  # find again for those  cxx libraries.
+  find_package(xgboost REQUIRED)
+endif(XGBOOST_BUILD_STATIC_LIB)
+
 set(USE_DPCPP no)
 find_package(oneDAL CONFIG REQUIRED)
 
@@ -30,6 +40,7 @@ target_link_libraries(fibo
     range-v3::range-v3
     cxxopts::cxxopts
     stdc++fs
+    xgboost::xgboost
     sum_integers)
 
 # Testing

@@ -8,7 +8,8 @@ rm -rf ${BUILDDIR}
 mkdir -p ${BUILDDIR}
 
 # This will call vcpkg install
-cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -S . -B ${BUILDDIR}
+CMAKE_PREFIX_PATH=$HOME/projects/xgboost/build/install/lib/cmake/xgboost cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -S . -B ${BUILDDIR}
+#CMAKE_MODULE_PATH=build/install/lib/cmake/xgboost cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -S . -B ${BUILDDIR}
 cmake --build ${BUILDDIR}
 
 # TODO -- Should add a flag to run this

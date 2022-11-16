@@ -7,6 +7,7 @@
 #include <iostream>
 #include <optional>
 #include <rapidcsv.h>
+#include <xgboost/c_api.h>
 
 std::optional<std::filesystem::path> get_full_path(const std::string& fileName)
 {
@@ -248,7 +249,8 @@ int main(int argc, char* argv[])
   std::array<float, 5> c; //
   std::cout << "Array c is of size " << c.size() << " elements." << std::endl;
 
-  const string trainDatasetFilename { "titanic_train.csv" };
+  //  const string trainDatasetFilename { "titanic_train.csv" };
+  const string trainDatasetFilename { "boston_housing.csv" };
 
   auto fullPath = get_full_path(trainDatasetFilename);
   if (fullPath.has_value()) {
@@ -257,6 +259,11 @@ int main(int argc, char* argv[])
     cout << "An error trying out getting a full path for file" << "\n";
     return EXIT_FAILURE;
   }
+
+  cout << "Getting the build information on linked XGBoost\n";
+  char const* out;
+  XGBuildInfo(&out);
+  cout << "Using XGBoost with info: [" << out << "]\n" << "\n";
 
   string hello_message { "Trying to parse file!" };
   cout << hello_message << "\n";
