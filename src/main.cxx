@@ -265,23 +265,54 @@ int main(int argc, char* argv[])
   XGBuildInfo(&out);
   cout << "Using XGBoost with info: [" << out << "]\n" << "\n";
 
-  string hello_message { "Trying to parse file!" };
-  cout << hello_message << "\n";
+  cout << "Trying to parse file!\n"; 
 
   // https://github.com/d99kris/rapidcsv/blob/master/doc/rapidcsv_Document.md
-  rapidcsv::Document titanic{fullPath.value(),
+  rapidcsv::Document dataset{fullPath.value(),
     rapidcsv::LabelParams{},
     rapidcsv::SeparatorParams{},  
     rapidcsv::ConverterParams{true}
   };
 
-  auto rows = titanic.GetRowCount(); // seems like it skips header
-  size_t max_rows = 5;
-  cout << "The document has " << rows << " lines." << "\n";
+  auto rows = dataset.GetRowCount(); // seems like it skips header
+  auto cols = dataset.GetColumnCount(); // seems like it skips header
+  auto num_features = cols - 1;
+#if 1
+  size_t max_rows = 10;
+#else
+  size_t max_rows = rows;
+#endif
+  cout << "The document has " << rows << " lines, with " << cols << " fields per line\n";
+  cout << "Going to populate an array with " << max_rows << " rows (of " << num_features << " elements each\n";
+  #if 0
+  float* arr = new float[ max_rows * num_features ];
+  float* labels = new float[ max_rows ];
+  #else
+  float* arr{new float[ max_rows * num_features ]{}};
+  float* labels{new float[ max_rows ]{}};
+  #endif
   for (size_t i = 0; i < max_rows; ++i) {
-    const auto row = titanic.GetRow<float>(i);
-    cout << "Row " << i << " has " << row.size() << " fields, the first of which is " << row[0] << " and the last " << row[ row.size() - 1 ] << ".\n";
+    const auto row = dataset.GetRow<float>(i);
+    std::copy(row.begin(), row.end() - 1, arr + (i * num_features));
+    labels[i] = row[ num_features ]; // the last field
+    cout << "Row " << i << " has " << row.size() << " fields, the first three of which are "
+	 << row[0] << ", "
+      	 << row[1] << ", "
+      	 << row[2] << ", "
+	 << " and the last " << row[ row.size() - 1 ] << ".\n";
   }
+
+#if 1
+  cout << "The arrays that were copied" << endl;
+  std::ostream_iterator<float> out_it (std::cout, ", ");
+  cout << "Features: " << endl;
+  std::copy ( arr, arr + (max_rows * num_features), out_it );
+  cout << endl << "Labels: " << endl;
+  std::copy ( labels, labels + max_rows, out_it );
+#endif
+  
+  delete arr;
+  delete labels;
   
   return EXIT_SUCCESS;
 }
