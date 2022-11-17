@@ -9,6 +9,8 @@
 #include <rapidcsv.h>
 #include <xgboost/c_api.h>
 
+#define MAX_ROWS 100
+
 std::optional<std::filesystem::path> get_full_path(const std::string& fileName)
 {
   auto dataset_path_name = std::getenv("DATASET_PATH");
@@ -277,8 +279,8 @@ int main(int argc, char* argv[])
   auto rows = dataset.GetRowCount(); // seems like it skips header
   auto cols = dataset.GetColumnCount(); // seems like it skips header
   auto num_features = cols - 1;
-#if 1
-  size_t max_rows = 10;
+#ifdef MAX_ROWS
+  size_t max_rows = MAX_ROWS;
 #else
   size_t max_rows = rows;
 #endif
@@ -288,6 +290,7 @@ int main(int argc, char* argv[])
   float* arr = new float[ max_rows * num_features ];
   float* labels = new float[ max_rows ];
   #else
+  // try initializer syntax
   float* arr{new float[ max_rows * num_features ]{}};
   float* labels{new float[ max_rows ]{}};
   #endif
@@ -302,7 +305,8 @@ int main(int argc, char* argv[])
 	 << " and the last " << row[ row.size() - 1 ] << ".\n";
   }
 
-#if 1
+#ifdef MAX_ROWS
+  // Don't output results unless number of rows is capped
   cout << "The arrays that were copied" << endl;
   std::ostream_iterator<float> out_it (std::cout, ", ");
   cout << "Features: " << endl;
@@ -310,9 +314,49 @@ int main(int argc, char* argv[])
   cout << endl << "Labels: " << endl;
   std::copy ( labels, labels + max_rows, out_it );
 #endif
+
+  cout << endl << "Fitting a gradient-boosted model" << endl;
+  cout << endl << "Creating matrix with " << max_rows << " rows and " << num_features << " columns." << endl;
+  DMatrixHandle dtrain[1];
+  XGDMatrixCreateFromMat(arr, max_rows, num_features, -1, &dtrain[0]);
+
+  int ret = XGDMatrixSetFloatInfo(dtrain[0], "label", labels, max_rows);
+  if (ret == -1) {
+    const char* error_text = XGBGetLastError();
+    cerr << "Something happened: [" << error_text << "]" << endl;
+  }
+  cout << "Was able to assign labels to train matrix" << endl;
+  BoosterHandle booster;
+  XGBoosterCreate(dtrain, 1, &booster);
+  XGBoosterSetParam(booster, "booster", "gbtree");
+  XGBoosterSetParam(booster, "objective", "reg:squarederror");
+  XGBoosterSetParam(booster, "max_depth", "1");
+  // XGBoosterSetParam(booster, "eta", "0.1");
+  // XGBoosterSetParam(booster, "n_estimators", "1"); // this is actually captured by numBoostRound
+  // XGBoosterSetParam(booster, "max_depth", "1");
+
+  int numBoostRound = 1;
+  for (int i = 0; i < numBoostRound; ++i) {
+    cout << "Round " << i << endl;
+    XGBoosterUpdateOneIter(booster, i, dtrain[0]);
+  }
+
+  bst_ulong num_models = 0;
+  char** model_string;
+  ret = XGBoosterDumpModelEx(booster, "", 0, "json", &num_models, (const char***) &model_string);
+  cout << "I should be dumping the model now, got " << ret << " (as result)  and rest:" << num_models << " models" << endl;
+  if (num_models > 0) {
+    cout << "Dumping the first model " << model_string[0] << endl;
+  }
+  cout << "------------------------" << endl;
+
+  bst_ulong config_str_len = 0;
+  char* booster_config;
+  ret = XGBoosterSaveJsonConfig(booster, &config_str_len, (const char**) &booster_config);
+  cout << "I should be dumping the booster config now, got " << ret << " (as result)  and a string of length:" << config_str_len << ", containing <<" << booster_config << ">>" << endl;
   
-  delete arr;
-  delete labels;
+  delete[] arr;
+  delete[] labels;
   
   return EXIT_SUCCESS;
 }
