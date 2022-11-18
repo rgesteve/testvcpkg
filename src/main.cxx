@@ -331,6 +331,7 @@ int main(int argc, char* argv[])
   XGBoosterSetParam(booster, "booster", "gbtree");
   XGBoosterSetParam(booster, "objective", "reg:squarederror");
   XGBoosterSetParam(booster, "max_depth", "1");
+  XGBoosterSetParam(booster, "base_score", "0");
   // XGBoosterSetParam(booster, "eta", "0.1");
   // XGBoosterSetParam(booster, "n_estimators", "1"); // this is actually captured by numBoostRound
   // XGBoosterSetParam(booster, "max_depth", "1");
@@ -354,6 +355,35 @@ int main(int argc, char* argv[])
   char* booster_config;
   ret = XGBoosterSaveJsonConfig(booster, &config_str_len, (const char**) &booster_config);
   cout << "I should be dumping the booster config now, got " << ret << " (as result)  and a string of length:" << config_str_len << ", containing <<" << booster_config << ">>" << endl;
+
+  // trying out prediction
+  cout << "------------------------" << endl;
+  DMatrixHandle dtest;
+  // last record of the dataset
+  const float values[] = { 0.04741,0.0,11.93,0.0,0.573,6.03,80.8,2.505,1.0,273.0,21.0,396.9,7.88  };
+  ret = XGDMatrixCreateFromMat(values, 1, 13, 0.0, &dtest);
+
+  cout << "Result of creating test matrix: [" << ret << "]" << endl;
+  const float* out_result_pred = NULL;
+  char const config[] =
+      "{\"training\": false, \"type\": 0, "
+      "\"iteration_begin\": 0, \"iteration_end\": 0, \"strict_shape\": false}";
+  /* Shape of output prediction */
+  uint64_t const* out_shape;
+  /* Dimension of output prediction */
+  uint64_t out_dim;
+  /* Pointer to a thread local contigious array, assigned in prediction function. */
+  float const* out_result = NULL;
+  ret = XGBoosterPredictFromDMatrix(booster, dtest, config, &out_shape, &out_dim, &out_result_pred);
+  cout << "Result of submitting to prediction: [" << ret << "]" << endl;
+  if (ret != -1) {
+    cout << "Dimensionality of result: [" << out_dim << "]" << endl;
+    cout << "Shape of output: [" << out_shape[out_dim - 1] << "]" << endl;
+    cout << "Result: [" << out_result_pred[0] << "]" << endl;
+  }
+
+  XGDMatrixFree(dtrain[0]);
+  XGDMatrixFree(dtest);
   
   delete[] arr;
   delete[] labels;
