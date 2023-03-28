@@ -11,21 +11,27 @@ find_package(cxxopts REQUIRED)
 # we should use
 find_path(RAPIDCSV_INCLUDE_DIRS "rapidcsv.h")
 
-find_package(xgboost REQUIRED)
-
-# xgboost is built as static libraries, all cxx dependencies need to be linked into the
-# executable.
-if (XGBOOST_BUILD_STATIC_LIB)
-  enable_language(CXX)
-  # find again for those  cxx libraries.
+option(RUN_XGBOOST_KERNEL "Include the XGBoost example" OFF)
+if(RUN_XGBOOST_KERNEL)
   find_package(xgboost REQUIRED)
-endif(XGBOOST_BUILD_STATIC_LIB)
 
-set(USE_DPCPP no)
-find_package(oneDAL CONFIG REQUIRED)
+  # xgboost is built as static libraries, all cxx dependencies need to be linked into the
+  # executable.
+  if(XGBOOST_BUILD_STATIC_LIB)
+    enable_language(CXX)
+    # find again for those  cxx libraries.
+    find_package(xgboost REQUIRED)
+  endif(XGBOOST_BUILD_STATIC_LIB)
+endif(RUN_XGBOOST_KERNEL)
 
-include_directories(${oneDAL_INCLUDE_DIRS})
-link_libraries(${oneDAL_IMPORTED_TARGETS})
+option(RUN_ONEDAL_KERNEL "Include the OneDAL example" OFF)
+if(RUN_ONEDAL_KERNEL)
+  set(USE_DPCPP no)
+  find_package(oneDAL CONFIG REQUIRED)
+  #
+  include_directories(${oneDAL_INCLUDE_DIRS})
+  link_libraries(${oneDAL_IMPORTED_TARGETS})
+endif(RUN_ONEDAL_KERNEL)
 
 # example library
 add_library(sum_integers SHARED sum_integers.cxx)
@@ -40,7 +46,7 @@ target_link_libraries(fibo
     range-v3::range-v3
     cxxopts::cxxopts
     stdc++fs
-    xgboost::xgboost
+#    xgboost::xgboost
     sum_integers)
 
 # Testing
