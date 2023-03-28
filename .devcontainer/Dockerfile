@@ -27,6 +27,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt update \
      && apt install -y mono-runtime \
      binutils curl mono-devel ca-certificates-mono nuget referenceassemblies-pcl \
+     flex bison \
  #   Don't need f# or VisualBasic for the moment.. not sure if mono-devel is needed either.
  #   fsharp mono-vbnc 
      && apt-get clean \
