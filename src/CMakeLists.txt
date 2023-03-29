@@ -50,6 +50,7 @@ target_link_libraries(fibo
     sum_integers)
 
 add_executable(onemore main2.cxx)
+target_compile_features(onemore PRIVATE cxx_std_20)
 
 # Testing
 # testing binary
