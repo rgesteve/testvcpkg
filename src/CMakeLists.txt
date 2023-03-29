@@ -49,6 +49,8 @@ target_link_libraries(fibo
 #    xgboost::xgboost
     sum_integers)
 
+add_executable(onemore main2.cxx)
+
 # Testing
 # testing binary
 #add_executable(cpp_test test.cxx)
