@@ -72,16 +72,23 @@ int main() {
     return EXIT_FAILURE;
   }
 
+  using RowType = std::tuple<double, double, double, double, std::string>;
+  const size_t RowTypeSize = tuple_size_v<RowType>;
+  cout << "The size of the record is: [" << RowTypeSize << "]" << endl;
+
   // Read data
-  io::CSVReader<5> in(fullPath.value());
+  // io::CSVReader<5> in(fullPath.value());
+  io::CSVReader<RowTypeSize> in(fullPath.value());
   // in.read_header(io::ignore_extra_column, "vendor", "size", "speed");
 
+#if 0
   // https://www.statology.org/iris-dataset-r/
   double sepal_length, sepal_width, petal_length, petal_width; 
   std::string species;
   while(in.read_row(sepal_length, sepal_width, petal_length, petal_width, species)) {
     cout << "Read data point of class [" << species << "]" << endl;
   }
+#endif
   
   return EXIT_SUCCESS;
 }
