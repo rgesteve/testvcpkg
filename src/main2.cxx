@@ -22,12 +22,27 @@
 #include "sum_integers.hpp"
 
 #undef _EXPANDED_DATASET_SCHEMA_
+//#define USE_IRIS
+#undef USE_IRIS
+
+#ifndef USE_IRIS
+#define DATASET_FILENAME "boston_housing.csv"
+#define HAS_HEADERS 1
+
+/* CRIM,ZN,INDUS,CHAS,NOX,RM,AGE,DIS,RAD,TAX,PTRATIO,B,LSTAT,MEDV */
+using RowType = std::tuple<float,float,float,float,float,float,float,float,float,float,float,float,float,float>;
+#else
+#define DATASET_FILENAME "iris.csv"
+#define HAS_HEADERS 0
+
+/* sepal_length, sepal_width, petal_length, petal_width, species : string */
+using RowType = std::tuple<double, double, double, double, std::string>;
+#endif
 
 using namespace std;
 namespace ranges = std::ranges;
 namespace views = std::ranges::views;
 
-using RowType = std::tuple<double, double, double, double, std::string>;
 const size_t RowTypeSize = tuple_size_v<RowType>;
 
 template<std::size_t... Idx, typename T, typename R>
@@ -36,8 +51,8 @@ bool read_row_helper(std::index_sequence<Idx...>, T& row, R& reader)
   return reader.read_row(std::get<Idx>(row)...);
 }
 
-template<std::size_t... Idx, typename T>
-void fill_values(std::index_sequence<Idx...>, T& row, std::vector<double>& data)
+template<std::size_t... Idx, typename T, typename S>
+void fill_values(std::index_sequence<Idx...>, T& row, std::vector<S>& data)
 {
   data.insert(end(data), { std::get<Idx>(row)... });
 }
@@ -79,7 +94,7 @@ int main() {
 
   foo();
 
-  const string trainDatasetFilename { "iris.csv" };
+  const string trainDatasetFilename { DATASET_FILENAME };
 
   auto fullPath = get_full_path(trainDatasetFilename);
   if (fullPath.has_value()) {
@@ -90,9 +105,11 @@ int main() {
   }
 
   // Read data
-  // io::CSVReader<5> in(fullPath.value());
   io::CSVReader<RowTypeSize> in(fullPath.value());
-  // in.read_header(io::ignore_extra_column, "vendor", "size", "speed");
+  if (HAS_HEADERS) {
+    // in.read_header(io::ignore_extra_column, "vendor", "size", "speed");
+    in.next_line();
+  }
 
 #ifdef _EXPANDED_DATASET_SCHEMA_
   // https://www.statology.org/iris-dataset-r/
@@ -105,8 +122,13 @@ int main() {
   bool done = false;
   size_t read_rows = 0;
   RowType row;
+#ifdef USE_IRIS
   vector<string> labels;
   vector<double> features;
+#else
+    vector<float> labels;
+    vector<float> features;
+#endif
 
   while (!done) {
     done = !read_row_helper(make_index_sequence<RowTypeSize>{}, row, in);
