@@ -7,10 +7,15 @@
 #include <iostream>
 #include <optional>
 #include <rapidcsv.h>
+#if 0
 #include <xgboost/c_api.h>
+#endif
+
+#include "sum_integers.hpp"
 
 #define MAX_ROWS 100
 
+#if 0
 std::optional<std::filesystem::path> get_full_path(const std::string& fileName)
 {
   auto dataset_path_name = std::getenv("DATASET_PATH");
@@ -32,6 +37,7 @@ std::optional<std::filesystem::path> get_full_path(const std::string& fileName)
   auto dataset_full_path = dataset_path / fileName;
   return dataset_full_path;
 }
+#endif
 
 #ifdef SUM_INTEGERS
 #include <cxxopts.hpp>
@@ -262,6 +268,7 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+#if 0
   cout << "Getting the build information on linked XGBoost\n";
   char const* out;
   XGBuildInfo(&out);
@@ -387,6 +394,7 @@ int main(int argc, char* argv[])
   
   delete[] arr;
   delete[] labels;
+#endif
   
   return EXIT_SUCCESS;
 }
