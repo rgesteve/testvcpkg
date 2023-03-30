@@ -17,6 +17,8 @@
 #endif 
 */
 
+#include "fast-cpp-csv-parser/csv.h"
+
 #include "sum_integers.hpp"
 
 using namespace std;
@@ -60,7 +62,7 @@ int main() {
 
   foo();
 
-  const string trainDatasetFilename { "boston_housing.csv" };
+  const string trainDatasetFilename { "iris.csv" };
 
   auto fullPath = get_full_path(trainDatasetFilename);
   if (fullPath.has_value()) {
@@ -68,6 +70,17 @@ int main() {
   } else {
     cout << "An error trying out getting a full path for file" << "\n";
     return EXIT_FAILURE;
+  }
+
+  // Read data
+  io::CSVReader<5> in(fullPath.value());
+  // in.read_header(io::ignore_extra_column, "vendor", "size", "speed");
+
+  // https://www.statology.org/iris-dataset-r/
+  double sepal_length, sepal_width, petal_length, petal_width; 
+  std::string species;
+  while(in.read_row(sepal_length, sepal_width, petal_length, petal_width, species)) {
+    cout << "Read data point of class [" << species << "]" << endl;
   }
   
   return EXIT_SUCCESS;

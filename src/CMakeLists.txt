@@ -33,6 +33,8 @@ if(RUN_ONEDAL_KERNEL)
   link_libraries(${oneDAL_IMPORTED_TARGETS})
 endif(RUN_ONEDAL_KERNEL)
 
+find_path(FAST_CPP_CSV_PARSER_INCLUDE_DIRS "fast-cpp-csv-parser/csv.h")
+
 # example library
 add_library(sum_integers SHARED sum_integers.cxx)
 
@@ -47,10 +49,13 @@ target_link_libraries(fibo
     cxxopts::cxxopts
     stdc++fs
 #    xgboost::xgboost
-    sum_integers)
+sum_integers)
+
+message("******** Found csv library at ${FAST_CPP_CSV_PARSER_INCLUDE_DIRS}...")
 
 add_executable(onemore main2.cxx)
 target_compile_features(onemore PRIVATE cxx_std_20)
+target_include_directories(onemore PRIVATE ${FAST_CPP_CSV_PARSER_INCLUDE_DIRS})
 target_link_libraries(onemore
   PRIVATE
 #    stdc++fs

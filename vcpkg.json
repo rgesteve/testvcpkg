@@ -6,7 +6,8 @@
 	"fmt",
 	"range-v3",
 	"arrow",
-	"rapidcsv"
+	"rapidcsv",
+	"fast-cpp-csv-parser"
     ]
   }
   
