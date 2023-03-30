@@ -51,8 +51,6 @@ target_link_libraries(fibo
 #    xgboost::xgboost
 sum_integers)
 
-message("******** Found csv library at ${FAST_CPP_CSV_PARSER_INCLUDE_DIRS}...")
-
 add_executable(onemore main2.cxx)
 target_compile_features(onemore PRIVATE cxx_std_20)
 target_include_directories(onemore PRIVATE ${FAST_CPP_CSV_PARSER_INCLUDE_DIRS})

@@ -21,9 +21,26 @@
 
 #include "sum_integers.hpp"
 
+#undef _EXPANDED_DATASET_SCHEMA_
+
 using namespace std;
 namespace ranges = std::ranges;
 namespace views = std::ranges::views;
+
+using RowType = std::tuple<double, double, double, double, std::string>;
+const size_t RowTypeSize = tuple_size_v<RowType>;
+
+template<std::size_t... Idx, typename T, typename R>
+bool read_row_helper(std::index_sequence<Idx...>, T& row, R& reader)
+{
+  return reader.read_row(std::get<Idx>(row)...);
+}
+
+template<std::size_t... Idx, typename T>
+void fill_values(std::index_sequence<Idx...>, T& row, std::vector<double>& data)
+{
+  data.insert(end(data), { std::get<Idx>(row)... });
+}
 
 void foo()
 {
@@ -72,22 +89,40 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  using RowType = std::tuple<double, double, double, double, std::string>;
-  const size_t RowTypeSize = tuple_size_v<RowType>;
-  cout << "The size of the record is: [" << RowTypeSize << "]" << endl;
-
   // Read data
   // io::CSVReader<5> in(fullPath.value());
   io::CSVReader<RowTypeSize> in(fullPath.value());
   // in.read_header(io::ignore_extra_column, "vendor", "size", "speed");
 
-#if 0
+#ifdef _EXPANDED_DATASET_SCHEMA_
   // https://www.statology.org/iris-dataset-r/
   double sepal_length, sepal_width, petal_length, petal_width; 
   std::string species;
   while(in.read_row(sepal_length, sepal_width, petal_length, petal_width, species)) {
     cout << "Read data point of class [" << species << "]" << endl;
   }
+#else
+  bool done = false;
+  size_t read_rows = 0;
+  RowType row;
+  vector<string> labels;
+  vector<double> features;
+
+  while (!done) {
+    done = !read_row_helper(make_index_sequence<RowTypeSize>{}, row, in);
+    if (!done) {
+      // cout << "The label in this row is: [" << std::get<RowTypeSize - 1>(row) << " ]." << endl;
+      labels.push_back(std::get<RowTypeSize - 1>(row));
+      fill_values(std::make_index_sequence<RowTypeSize - 1>{}, row, features);
+      read_rows++;
+    }
+  }
+  cout << "Read: " << read_rows << " rows, labels is has now " << labels.size() <<" elements, " 
+       << "and features has: " << features.size() << " elements, a sampling of which is: "  << endl;
+  const size_t SAMPLE_SIZE = 5;
+  auto check_view = ranges::take_view(features, SAMPLE_SIZE * RowTypeSize);
+  copy(begin(check_view), end(check_view), ostream_iterator<double>(cout, ", "));
+  cout << endl;
 #endif
   
   return EXIT_SUCCESS;
