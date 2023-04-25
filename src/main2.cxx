@@ -8,6 +8,8 @@
 #include <tuple>
 #include <cstdlib>
 
+#include <xgboost/c_api.h>
+
 // Apparently this is only implemented in MSVC for the moment
 /*
 #if __has_include(<format>) 
@@ -163,6 +165,44 @@ int main() {
   cout << endl;
 #endif
 
+  int num_features = 30;
+  int num_samples = 569;
+
+  // Set up input data
+  DMatrixHandle dtrain;
+  XGDMatrixCreateFromMat(features.data(), num_samples, num_features, 0.0, &dtrain);
+  XGDMatrixSetFloatInfo(dtrain, "label", (float*)labels.data(), num_samples);
+
+  BoosterHandle booster;
+  XGBoosterCreate(&dtrain, 1, &booster);
+  XGBoosterSetParam(booster, "booster", "gbtree");
+  XGBoosterSetParam(booster, "objective", "binary:logistic");
+  XGBoosterSetParam(booster, "max_depth", "10");
+  //  XGBoosterSetParam(booster, "base_score", "0");
+
+  int numBoostRound = 1;
+  for (int i = 0; i < numBoostRound; ++i) {
+    cout << "Round " << i << endl;
+    XGBoosterUpdateOneIter(booster, i, dtrain);
+  }
+
+  bst_ulong num_models = 0;
+  char** model_string;
+  int ret = XGBoosterDumpModelEx(booster, "", 0, "json", &num_models, (const char***) &model_string);
+  cout << "I should be dumping the model now, got " << ret << " (as result)  and rest:" << num_models << " models" << endl;
+  if (num_models > 0) {
+    cout << "Dumping the first model " << model_string[0] << endl;
+  }
+  cout << "------------------------" << endl;
+
+  bst_ulong config_str_len = 0;
+  char* booster_config;
+  ret = XGBoosterSaveJsonConfig(booster, &config_str_len, (const char**) &booster_config);
+  cout << "I should be dumping the booster config now, got " << ret << " (as result)  and a string of length:" << config_str_len << ", containing <<" << booster_config << ">>" << endl;
+
+  // Clean up
+  XGDMatrixFree(dtrain);
+  XGBoosterFree(booster);
   cout << "Done!" << endl;
   
   return EXIT_SUCCESS;
