@@ -32,3 +32,12 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
  #   fsharp mono-vbnc 
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/
+
+# from https://github.com/getumen/go-xgboost/blob/ac1f86c123a7af537fc3b86c906d066b1ebed2e9/.devcontainer/Dockerfile#L23
+RUN cd /tmp/ && git clone --branch v1.7.5 --recursive https://github.com/dmlc/xgboost.git \
+    && cd xgboost \
+    && mkdir build \
+    && cmake -S . -B build \
+    && cmake --build build  \
+    && cmake --install build  \
+    && rm -r /tmp/xgboost
