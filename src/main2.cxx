@@ -22,15 +22,28 @@
 #include "sum_integers.hpp"
 
 #undef _EXPANDED_DATASET_SCHEMA_
-//#define USE_IRIS
 #undef USE_IRIS
+#undef USE_HOUSING
+#define USE_BREASTC
 
-#ifndef USE_IRIS
+#ifdef USE_HOUSING
 #define DATASET_FILENAME "boston_housing.csv"
 #define HAS_HEADERS 1
 
 /* CRIM,ZN,INDUS,CHAS,NOX,RM,AGE,DIS,RAD,TAX,PTRATIO,B,LSTAT,MEDV */
 using RowType = std::tuple<float,float,float,float,float,float,float,float,float,float,float,float,float,float>;
+#elif defined USE_BREASTC
+// https://archive.ics.uci.edu/ml/datasets/Breast%20Cancer%20Wisconsin%20(Diagnostic)
+// https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data
+// https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html
+// Winsconsin Breast Cancer dataset (as encoded by sklearn)
+using RowType = std::tuple<float,float,float,float,float,float,float,float,float,float,
+			   float,float,float,float,float,float,float,float,float,float,
+			   float,float,float,float,float,float,float,float,float,float,
+			   unsigned int>;
+#define DATASET_FILENAME "breast_cancer.csv"
+#undef _EXPANDED_DATASET_SCHEMA_
+#define HAS_HEADERS 0
 #else
 #define DATASET_FILENAME "iris.csv"
 #define HAS_HEADERS 0
@@ -125,6 +138,9 @@ int main() {
 #ifdef USE_IRIS
   vector<string> labels;
   vector<double> features;
+#elif defined USE_BREASTC
+  vector<unsigned int> labels;
+  vector<float> features;
 #else
     vector<float> labels;
     vector<float> features;
@@ -146,6 +162,8 @@ int main() {
   copy(begin(check_view), end(check_view), ostream_iterator<double>(cout, ", "));
   cout << endl;
 #endif
+
+  cout << "Done!" << endl;
   
   return EXIT_SUCCESS;
 }
