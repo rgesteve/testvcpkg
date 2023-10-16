@@ -51,15 +51,15 @@ target_link_libraries(fibo
 #    xgboost::xgboost
 sum_integers)
 
-add_executable(onemore main2.cxx)
-target_compile_features(onemore PRIVATE cxx_std_20)
-target_compile_options(onemore PRIVATE -fpermissive)
-target_include_directories(onemore PRIVATE ${FAST_CPP_CSV_PARSER_INCLUDE_DIRS})
-target_link_libraries(onemore
-  PRIVATE
-  xgboost::xgboost
-#    stdc++fs
-    sum_integers)
+# add_executable(onemore main2.cxx)
+# target_compile_features(onemore PRIVATE cxx_std_20)
+# target_compile_options(onemore PRIVATE -fpermissive)
+# target_include_directories(onemore PRIVATE ${FAST_CPP_CSV_PARSER_INCLUDE_DIRS})
+# target_link_libraries(onemore
+#   PRIVATE
+#   xgboost::xgboost
+# #    stdc++fs
+#     sum_integers)
 
 # Testing
 # testing binary
