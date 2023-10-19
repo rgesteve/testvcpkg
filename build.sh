@@ -13,6 +13,7 @@ mkdir -p ${BUILDDIR}
 cmake -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake -S . -B ${BUILDDIR}
 #cmake -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake -DRUN_XGBOOST_KERNEL=ON -S . -B ${BUILDDIR}
 cmake --build ${BUILDDIR}
+cmake --install ${BUILDDIR} --prefix ${BUILDDIR}/install
 
 # TODO -- Should add a flag to run this
 # to run the test suite

@@ -66,6 +66,15 @@ sum_integers)
 #add_executable(cpp_test test.cxx)
 #target_link_libraries(cpp_test sum_integers)
 
+set(CMAKE_INSTALL_PREFIX "install")
+
+find_package(Arrow CONFIG REQUIRED)
+
+add_executable(main3 main3.cxx)
+target_link_libraries(main3 PRIVATE "$<IF:$<BOOL:$(ARROW_BUILD_STATIC)>,Arrow::arrow_static,Arrow::arrow_shared>")
+install(TARGETS main3 DESTINATION bin)
+install(DIRECTORY "../data" DESTINATION share)
+
 #if(BUILD_TESTING)
 # define tests
 #add_test(
